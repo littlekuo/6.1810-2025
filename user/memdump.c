@@ -1,6 +1,7 @@
 #include "kernel/types.h"
 #include "user/user.h"
 #include "kernel/fcntl.h"
+#include <stdint.h>
 
 void memdump(char *fmt, char *data);
 
@@ -61,5 +62,37 @@ void
 memdump(char *fmt, char *data)
 {
   // Your code here.
-
+  int i = 0;
+  while(*fmt != '\0'){
+    switch(*fmt){
+    case 'i':
+      printf("%d\n", *(int*)(data + i));
+      i += sizeof(int);
+      break;
+    case 'p':
+      printf("%llx\n", *(long long*)(data + i));
+      i += sizeof(long long);
+      break;
+    case 'h':
+      printf("%d\n", *(short*)(data + i));
+      i += sizeof(short);
+      break;
+    case 'c':
+      printf("%c\n", *(char*)(data + i));
+      i += sizeof(char);
+      break;
+    case 's':
+      printf("%s\n", *(char**)(data + i));
+      i += sizeof(char*);
+      break;
+    case 'S':
+      printf("%s\n", (char*)(data + i));
+      i += strlen((char*)(data + i)) + 1;
+      break;
+    default:
+      printf("Invalid format character: %c\n", *fmt);
+      exit(1);
+    }
+    fmt++;
+  }
 }
