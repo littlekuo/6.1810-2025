@@ -169,6 +169,8 @@ freeproc(struct proc *p)
   p->killed = 0;
   p->xstate = 0;
   p->state = UNUSED;
+  p->syscall_mask = 0;
+  p->allowed_path[0] = 0;
 }
 
 // Create a user page table for a given process, with no user memory,
@@ -284,6 +286,9 @@ kfork(void)
     if(p->ofile[i])
       np->ofile[i] = filedup(p->ofile[i]);
   np->cwd = idup(p->cwd);
+
+  np->syscall_mask = p->syscall_mask;
+  safestrcpy(np->allowed_path, p->allowed_path, sizeof(p->allowed_path));
 
   safestrcpy(np->name, p->name, sizeof(p->name));
 
